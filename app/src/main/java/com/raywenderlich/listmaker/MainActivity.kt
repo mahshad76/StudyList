@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.raywenderlich.listmaker.databinding.MainActivityBinding
@@ -36,12 +37,20 @@ class MainActivity : AppCompatActivity(), MainFragment.MainFragmentInteractionLi
         val view = binding.root
         setContentView(view)
         Log.i("MainActivity", viewModel.toString())
-
+        //Connecting the fragment to the activity. Check the layout which is used by the activity to see if it has fragment container view. Otherwise, the id of the fragment layout is taken.
         if (savedInstanceState == null) {
-            val mainFragment = MainFragment.newInstance(this)
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.detail_container, mainFragment)
-                .commitNow()
+            val fragmentContainerViewId: Int =
+                if (binding.mainFragmentContainer == null) {
+                    R.id.main
+                } else {
+                    R.id.main_fragment_container
+                }
+            val mainFragment = MainFragment.newInstance()
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                //adding main fragment to the fragment container which is fragment container view or fragment layout.
+                add(fragmentContainerViewId, mainFragment)
+            }
         }
 
         binding.fabButton.setOnClickListener {
