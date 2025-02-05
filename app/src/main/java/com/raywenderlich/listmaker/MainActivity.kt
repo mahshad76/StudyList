@@ -8,12 +8,14 @@ import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.raywenderlich.listmaker.databinding.MainActivityBinding
 import com.raywenderlich.listmaker.models.TaskList
 import com.raywenderlich.listmaker.ui.detail.ListDetailActivity
+import com.raywenderlich.listmaker.ui.detail.ui.detail.ListDetailFragment
 import com.raywenderlich.listmaker.ui.main.MainFragment
 import com.raywenderlich.listmaker.ui.main.MainViewModel
 import com.raywenderlich.listmaker.ui.main.MainViewModelFactory
@@ -81,11 +83,23 @@ class MainActivity : AppCompatActivity(), MainFragment.MainFragmentInteractionLi
     }
 
     private fun showListDetail(list: TaskList) {
-        val listDetailIntent = Intent(this, ListDetailActivity::class.java)
-        //in the conversation between the activities, INTENT_LIST_KEY and LIST_DETAIL_REQUEST_CODE show that the request is coming from each activity and the response coming from which one.
-        listDetailIntent.putExtra(INTENT_LIST_KEY, list)
-        //waiting until hearing back from the list detail activity.
-        startActivityForResult(listDetailIntent, LIST_DETAIL_REQUEST_CODE)
+        if (binding.detailContainer == null) {
+            val listDetailIntent = Intent(this, ListDetailActivity::class.java)
+            //in the conversation between the activities, INTENT_LIST_KEY and LIST_DETAIL_REQUEST_CODE show that the request is coming from each activity and the response coming from which one.
+            listDetailIntent.putExtra(INTENT_LIST_KEY, list)
+            //waiting until hearing back from the list detail activity.
+            startActivityForResult(listDetailIntent, LIST_DETAIL_REQUEST_CODE)
+        } else {
+            val bundle = bundleOf(INTENT_LIST_KEY to list)
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace(
+                    R.id.list_detail_fragment_container,
+                    ListDetailFragment::class.java, bundle, null
+                )
+            }
+
+        }
     }
 
     override fun listItemTapped(list: TaskList) {
