@@ -48,9 +48,8 @@ class MainViewModel(private val sharedPreferences: SharedPreferences) : ViewMode
 
   ///Managing the list detail view model with main view model when tablet is used.
 
-  lateinit var list: TaskList
   fun addTask(task: String) {
-    list.tasks.add(task)
+    tasksList.tasks.add(task)
     onTaskAdded.invoke()
   }
 }

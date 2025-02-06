@@ -16,7 +16,7 @@ import kotlin.properties.Delegates
 
 class MainFragment() : Fragment(),
     ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
-    private lateinit var clickListener: MainFragmentInteractionListener
+    lateinit var clickListener: MainFragmentInteractionListener
 
     interface MainFragmentInteractionListener {
         fun listItemTapped(list: TaskList)

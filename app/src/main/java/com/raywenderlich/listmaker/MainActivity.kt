@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), MainFragment.MainFragmentInteractionLi
                     R.id.main_fragment_container
                 }
             val mainFragment = MainFragment.newInstance()
+            mainFragment.clickListener = this
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
                 //adding main fragment to the fragment container which is fragment container view or fragment layout.
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity(), MainFragment.MainFragmentInteractionLi
     }
 
     private fun showListDetail(list: TaskList) {
+        Log.d("","Show list detail is called")
         if (binding.listDetailFragmentContainer == null) {
             val listDetailIntent = Intent(this, ListDetailActivity::class.java)
             //in the conversation between the activities, INTENT_LIST_KEY and LIST_DETAIL_REQUEST_CODE show that the request is coming from each activity and the response coming from which one.
