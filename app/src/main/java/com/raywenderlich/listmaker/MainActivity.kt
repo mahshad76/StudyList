@@ -56,6 +56,8 @@ class MainActivity : AppCompatActivity(), MainFragment.MainFragmentInteractionLi
         }
 
         binding.fabButton.setOnClickListener {
+            //based on the layout which main activity interacts with, if it is for tablet, the button has to manage two responsibilities.
+            //showCreateTaskDialog()
             showCreateListDialog()
         }
     }
@@ -82,8 +84,30 @@ class MainActivity : AppCompatActivity(), MainFragment.MainFragmentInteractionLi
         builder.create().show()
     }
 
+    private fun showCreateTaskDialog() {
+        //1
+        val taskEditText = EditText(this)
+        taskEditText.inputType = InputType.TYPE_CLASS_TEXT
+
+        //2
+        AlertDialog.Builder(this)
+            .setTitle(R.string.task_to_add)
+            .setView(taskEditText)
+            .setPositiveButton(R.string.add_task) { dialog, _ ->
+                // 3
+                val task = taskEditText.text.toString()
+                // 4
+                viewModel.addTask(task)
+                //5
+                dialog.dismiss()
+            }
+            //6
+            .create()
+            .show()
+    }
+
     private fun showListDetail(list: TaskList) {
-        if (binding.detailContainer == null) {
+        if (binding.listDetailFragmentContainer == null) {
             val listDetailIntent = Intent(this, ListDetailActivity::class.java)
             //in the conversation between the activities, INTENT_LIST_KEY and LIST_DETAIL_REQUEST_CODE show that the request is coming from each activity and the response coming from which one.
             listDetailIntent.putExtra(INTENT_LIST_KEY, list)
@@ -98,6 +122,7 @@ class MainActivity : AppCompatActivity(), MainFragment.MainFragmentInteractionLi
                     ListDetailFragment::class.java, bundle, null
                 )
             }
+            binding.fabButton.setOnClickListener { showCreateTaskDialog() }
 
         }
     }
@@ -125,5 +150,21 @@ class MainActivity : AppCompatActivity(), MainFragment.MainFragmentInteractionLi
     companion object {
         const val INTENT_LIST_KEY = "list"
         const val LIST_DETAIL_REQUEST_CODE = 123
+    }
+
+    override fun onBackPressed() {
+        val listDetailFragment =
+            supportFragmentManager.findFragmentById(R.id.list_detail_fragment_container)
+        if (listDetailFragment == null) {
+            super.onBackPressed()
+
+        } else {
+            title = resources.getString(R.string.app_name)
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                remove(listDetailFragment)
+            }
+            binding.fabButton.setOnClickListener { showCreateListDialog() }
+        }
     }
 }

@@ -14,12 +14,13 @@ import com.raywenderlich.listmaker.databinding.ListDetailActivityBinding
 import com.raywenderlich.listmaker.models.TaskList
 import com.raywenderlich.listmaker.ui.detail.ui.detail.ListDetailFragment
 import com.raywenderlich.listmaker.ui.detail.ui.detail.ListDetailViewModel
+import com.raywenderlich.listmaker.ui.main.MainViewModel
 
 class ListDetailActivity : AppCompatActivity() {
 
   lateinit var binding: ListDetailActivityBinding
 
-  lateinit var viewModel: ListDetailViewModel
+  lateinit var viewModel: MainViewModel
 
   lateinit var fragment: ListDetailFragment
 
@@ -30,14 +31,14 @@ class ListDetailActivity : AppCompatActivity() {
     val view = binding.root
     setContentView(view)
 
-    viewModel = ViewModelProvider(this).get(ListDetailViewModel::class.java)
-    viewModel.list = intent.getParcelableExtra(MainActivity.INTENT_LIST_KEY)!!
+    viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+    viewModel.tasksList = intent.getParcelableExtra(MainActivity.INTENT_LIST_KEY)!!
 
     binding.addTaskButton.setOnClickListener {
       showCreateTaskDialog()
     }
 
-    title = viewModel.list.name
+    title = viewModel.tasksList.name
 
     if (savedInstanceState == null) {
       supportFragmentManager.beginTransaction()
@@ -70,7 +71,7 @@ class ListDetailActivity : AppCompatActivity() {
 
   override fun onBackPressed() {
     val bundle = Bundle()
-    bundle.putParcelable(MainActivity.INTENT_LIST_KEY, viewModel.list)
+    bundle.putParcelable(MainActivity.INTENT_LIST_KEY, viewModel.tasksList)
 
     val intent = Intent()
     intent.putExtras(bundle)

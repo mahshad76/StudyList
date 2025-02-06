@@ -11,6 +11,7 @@ import com.raywenderlich.listmaker.MainActivity
 import com.raywenderlich.listmaker.R
 import com.raywenderlich.listmaker.databinding.ListDetailFragmentBinding
 import com.raywenderlich.listmaker.models.TaskList
+import com.raywenderlich.listmaker.ui.main.MainViewModel
 
 class ListDetailFragment : Fragment() {
 
@@ -20,7 +21,8 @@ class ListDetailFragment : Fragment() {
         fun newInstance() = ListDetailFragment()
     }
 
-    private lateinit var viewModel: ListDetailViewModel
+    //Connecting the detail fragment to the main viewmodel when tablet mode is used.
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,16 +37,16 @@ class ListDetailFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ListDetailViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         ///Bundle is used to transfer data between an activity and a fragment. Setting the detailed view model data based on that.
         val list: TaskList? =
             arguments?.getParcelable(MainActivity.INTENT_LIST_KEY)
         if (list != null) {
-            viewModel.list = list
+            viewModel.tasksList = list
             requireActivity().title = list.name
         }
         ///////
-        val recyclerAdapter = ListItemsRecyclerViewAdapter(viewModel.list)
+        val recyclerAdapter = ListItemsRecyclerViewAdapter(viewModel.tasksList)
         binding.listItemsRecyclerview.adapter = recyclerAdapter
         binding.listItemsRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 

@@ -5,8 +5,12 @@ import androidx.lifecycle.ViewModel
 import com.raywenderlich.listmaker.models.TaskList
 
 class MainViewModel(private val sharedPreferences: SharedPreferences) : ViewModel() {
-
+  //if the tablet is the device, the you need only one view model to interact from the main activity to two other fragments.
   lateinit var onListAdded: (() -> Unit)
+
+  lateinit var tasksList: TaskList
+
+  lateinit var onTaskAdded: (() -> Unit)
 
   val lists: MutableList<TaskList> by lazy {
     retrieveLists()
@@ -40,5 +44,13 @@ class MainViewModel(private val sharedPreferences: SharedPreferences) : ViewMode
   fun refreshLists() {
     lists.clear()
     lists.addAll(retrieveLists())
+  }
+
+  ///Managing the list detail view model with main view model when tablet is used.
+
+  lateinit var list: TaskList
+  fun addTask(task: String) {
+    list.tasks.add(task)
+    onTaskAdded.invoke()
   }
 }
